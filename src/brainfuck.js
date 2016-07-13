@@ -5,21 +5,35 @@ const preprocess = require("./preprocess.js");
 const interpret = require("./interpret.js");
 
 const args = process.argv.slice(2);
-const memSize = 30000;
-let verbose;
+
+const settings = {
+  "memSize": 30000,
+  "verbose": false
+};
+
 let file;
 
-if(args.length === 1) {
-  verbose = false;
+if (args.length === 1) {
   file = args[0];
-} else if( args.length >= 2){
-  verbose = (args[0] === "-v");
+} else if (args.length >= 2) {
+  settings.verbose = (args[0] === "-v");
   file = args[1];
 }
 
-fs.readFile(file, "utf-8", function(err, data) {
+fs.readFile(file, "utf-8", function(err, rawSource) {
   if (err) {
     throw err;
   }
-  interpret(preprocess(data), memSize, verbose);
+  execute(rawSource);
 });
+
+function execute(rawSource) {
+  const data = {
+    "memory": [0],
+    "p": 0,
+    "source": preprocess(rawSource),
+    "ic": 0,
+  };
+
+  interpret(data, settings);
+}

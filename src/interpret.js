@@ -4,82 +4,99 @@ const readlineSync = require("readline-sync");
 
 module.exports = interpret;
 
-const operations = {
-  "+": (data) => {
-    data.memory[data.p]++;
-  },
-  "-": (data) => {
-    data.memory[data.p]--;
-  },
-  ">": (data) => {
-    if (++data.p === data.memory.length) {
-      data.memory.push(0);
-    }
-    if (data.memory.length > data.memSize) {
-      throw new Error("Maximum memory size exceeded: " + data.memory.length);
-    }
-  },
-  "<": (data) => {
-    if (--data.p < 0) {
-      throw new Error("Index out of bounds: " + data.p);
-    }
-  },
-  ".": (data) => {
-    data.output += String.fromCharCode(data.memory[data.p]);
-  },
-  ",": (data) => {
-    const input = readlineSync.question("Enter number to read at cell " + data.p + ":\n");
-    data.memory[data.p] = parseInt(input, 10);
-  },
-  "[": (data) => {
-    if (data.memory[data.p] === 0) {
-      let loop = 1;
-      while (loop !== 0) {
-        data.ic++;
-        if (data.program[data.ic] === "[") {
-          loop++;
-        } else if (data.program[data.ic] === "]") {
-          loop--;
-        }
-      }
-    }
-  },
-  "]": (data) => {
-    if (data.memory[data.p] !== 0) {
-      let loop = 1;
-      while (loop !== 0) {
-        data.ic--;
-        if (data.program[data.ic] === "]") {
-          loop++;
-        } else if (data.program[data.ic] === "[") {
-          loop--;
-        }
-      }
-    }
-  }
-};
+function interpret(data, settings) {
+  let {
+    memory,
+    p,
+    source,
+    ic,
+  } = data;
 
-function interpret(program, memSize, verbose) {
-  const data = {
-    "memory": [0],
-    "p": 0,
-    "memSize": memSize,
-    "program": program,
-    "ic": 0,
-    "output": ""
+  const {
+    memSize,
+    verbose
+  } = settings;
+  
+  let output = "";
+
+  const operations = {
+    "+": () => {
+      memory[p]++;
+    },
+    "-": () => {
+      memory[p]--;
+    },
+    ">": () => {
+      if (++p === memory.length) {
+        memory.push(0);
+      }
+      if (memory.length > memSize) {
+        throw new Error("Maximum memory size exceeded: " + memory.length);
+      }
+    },
+    "<": () => {
+      if (--p < 0) {
+        throw new Error("Index out of bounds: " + p);
+      }
+    },
+    ".": () => {
+      output += String.fromCharCode(memory[p]);
+    },
+    ",": () => {
+      const input = readlineSync.question("Enter number to read at cell " + p + ":\n");
+      memory[p] = parseInt(input, 10);
+    },
+    "[": () => {
+      if (memory[p] === 0) {
+        let loop = 1;
+        while (loop !== 0) {
+          ic++;
+          if (source[ic] === "[") {
+            loop++;
+          } else if (source[ic] === "]") {
+            loop--;
+          }
+        }
+      }
+    },
+    "]": () => {
+      if (memory[p] !== 0) {
+        let loop = 1;
+        while (loop !== 0) {
+          ic--;
+          if (source[ic] === "]") {
+            loop++;
+          } else if (source[ic] === "[") {
+            loop--;
+          }
+        }
+      }
+    }
   };
 
-  while (data.ic < program.length) {
-    operations[program[data.ic]](data);
+  while (ic < source.length) {
+
+    operations[source[ic]](data);
 
     if (verbose) {
-      console.log("instruction:", program[data.ic]);
-      console.log("pointer: ", data.p);
-      console.log("memory: ", data.memory);
-      console.log();
+      commentExecution(data);
     }
-    data.ic++;
+    ic++;
   }
 
-  console.log("output:", data.output);
+  console.log("output:", output);
+}
+
+function commentExecution(data) {
+  let {
+    memory,
+    p,
+    source,
+    ic
+  } = data;
+
+  console.log("instruction:", source[ic]);
+  console.log("pointer: ", p);
+  console.log("memory: ", memory);
+  console.log();
 }
