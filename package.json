@@ -9,6 +9,7 @@
   "author": "tomasr",
   "license": "MIT",
   "dependencies": {
+    "chai": "^3.5.0",
     "readline-sync": "^1.4.4"
   }
 }
