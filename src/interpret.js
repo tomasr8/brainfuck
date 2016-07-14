@@ -60,6 +60,9 @@ function interpret(data, settings) {
       memory[p] = parseInt(input, 10);
     },
     "[": () => {
+      // find the corresponding closing bracket and skip the whole block
+      // if the current cell is zero,
+      // otherwise execute instructions as normal
       if (memory[p] === 0) {
         let loop = 1;
         while (loop !== 0) {
@@ -73,6 +76,9 @@ function interpret(data, settings) {
       }
     },
     "]": () => {
+      // find the corresponding opening bracket and go back
+      // the entire block if the current cell is non-zero,
+      // otherwise do nothing
       if (memory[p] !== 0) {
         let loop = 1;
         while (loop !== 0) {
