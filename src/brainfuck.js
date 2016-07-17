@@ -7,8 +7,8 @@ const interpret = require("./interpret.js");
 const args = process.argv.slice(2);
 
 const settings = {
-  "memSize": 30000,
-  "verbose": false
+  memSize: 30000,
+  verbose: false
 };
 
 let file;
@@ -29,10 +29,10 @@ fs.readFile(file, "utf-8", function(err, rawSource) {
 
 function execute(rawSource) {
   const data = {
-    "memory": [0],
-    "p": 0,
-    "source": preprocess(rawSource),
-    "ic": 0,
+    memory: [0],
+    p: 0,
+    source: preprocess(rawSource),
+    ic: 0,
   };
 
   interpret(data, settings);

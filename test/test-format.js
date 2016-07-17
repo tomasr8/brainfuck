@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect;
 
-String.prototype.format = require('../format.js');
+String.prototype.format = require('../src/format.js');
 
 describe('format() test', function() {
   it('should work with one argument', function() {

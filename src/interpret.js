@@ -6,11 +6,11 @@ const format = require("./format.js");
 String.prototype.format = format;
 
 const messages = {
-  "oomError": "Maximum memory size exceeded: {}",
-  "iobError": "Index out of bounds: {}",
-  "readMessage": "Enter number to read at cell {}:\n",
-  "outputMessage": "output: {}",
-  "executionComment": "instruction: {}\npointer: {}\nmemory: {}\n",
+  0: "Maximum memory size exceeded: {}",
+  1: "Index out of bounds: {}",
+  2: "Enter number to read at cell {}:\n",
+  3: "output: {}",
+  4: "instruction: {}\npointer: {}\nmemory: {}\n",
 };
 
 module.exports = interpret;
@@ -43,20 +43,20 @@ function interpret(data, settings) {
         memory.push(0);
       }
       if (memory.length > memSize) {
-        throw new Error(messages.oomError.format(memory.length));
+        throw new Error(messages[0].format(memory.length));
       }
     },
     "<": () => {
       // no negative indices
       if (--p < 0) {
-        throw new Error(messages.iobError.format(p));
+        throw new Error(messages[1].format(p));
       }
     },
     ".": () => {
       output += String.fromCharCode(memory[p]);
     },
     ",": () => {
-      const input = readlineSync.question(messages.readMessage.format(p));
+      const input = readlineSync.question(messages[2].format(p));
       memory[p] = parseInt(input, 10);
     },
     "[": () => {
@@ -103,11 +103,11 @@ function interpret(data, settings) {
     ic++;
   }
 
-  console.log(messages.outputMessage.format(output));
+  console.log(messages[3].format(output));
 }
 
 function getComment(data) {
-  return messages.commentExecution.format(
+  return messages[4].format(
     data.source[data.ic],
     data.p,
     data.memory);
