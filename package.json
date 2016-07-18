@@ -4,12 +4,14 @@
   "description": "brainfuck interpreter",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "tomasr",
   "license": "MIT",
   "dependencies": {
-    "chai": "^3.5.0",
     "readline-sync": "^1.4.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
   }
 }
